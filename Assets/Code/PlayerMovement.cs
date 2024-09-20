@@ -47,7 +47,7 @@ public class PlayerMovement : MonoBehaviour
         {
             sprite_karakter.localScale = new Vector2(-1f, 1);
         }
-        else
+        if (dirX > 0)
         {
             sprite_karakter.localScale = new Vector2(1f, 1);
         }
