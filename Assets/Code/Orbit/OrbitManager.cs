@@ -25,12 +25,12 @@ public class OrbitManager : MonoBehaviour
     void Update()
     {
         // Contoh menambah atau menghapus objek dengan tombol input
-        if (Input.GetKeyDown(KeyCode.UpArrow))
+        if (Input.GetKeyDown(KeyCode.O))
         {
             AddOrbitingObject();
             UpdateOrbitingObjectAngles();  // Atur sudut objek baru
         }
-        if (Input.GetKeyDown(KeyCode.DownArrow))
+        if (Input.GetKeyDown(KeyCode.P))
         {
             RemoveOrbitingObject(orbitingObjects.Count > 0 ? orbitingObjects[orbitingObjects.Count - 1] : null);
             UpdateOrbitingObjectAngles();  // Atur sudut ulang setelah objek dihapus
@@ -41,7 +41,10 @@ public class OrbitManager : MonoBehaviour
     {
         // Buat objek baru
         GameObject newObject = Instantiate(orbitingObjectPrefab);
+
         newObject.transform.position = player.position;
+        // Set newObject sebagai child dari orbitManager
+        newObject.transform.SetParent(this.transform);
 
         // Dapatkan komponen OrbitingObject
         OrbitingObject orbitScript = newObject.GetComponent<OrbitingObject>();
@@ -88,3 +91,4 @@ public class OrbitManager : MonoBehaviour
         }
     }
 }
+

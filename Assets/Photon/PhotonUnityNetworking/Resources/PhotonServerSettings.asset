@@ -41,6 +41,9 @@ MonoBehaviour:
   - RespawnSpaceship
   - SyncAnimation
   - SyncFlip
+  - SetOrbitManager
+  - SetObjectParent
+  - SetParentRPC
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
