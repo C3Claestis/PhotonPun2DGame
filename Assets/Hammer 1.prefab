@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6214728484624510701}
   - component: {fileID: 4586365628577995754}
   - component: {fileID: 5923615744998354120}
+  - component: {fileID: 6910527203513633250}
   m_Layer: 0
   m_Name: Hammer 1
   m_TagString: OrbitObject
@@ -50,6 +51,7 @@ MonoBehaviour:
   orbitRadius: 5
   orbitSpeed: 200
   player: {fileID: 0}
+  orbitManager: {fileID: 0}
 --- !u!50 &4586365628577995754
 Rigidbody2D:
   serializedVersion: 4
@@ -112,6 +114,29 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 2, y: 3}
   m_Direction: 0
+--- !u!114 &6910527203513633250
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5637542424750766000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 7566484596926380204}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &6074326420364083561
 GameObject:
   m_ObjectHideFlags: 0
@@ -122,6 +147,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1239377876013909896}
   - component: {fileID: 8813539937913514932}
+  - component: {fileID: 7566484596926380204}
   m_Layer: 0
   m_Name: Sprite
   m_TagString: OrbitObject
@@ -196,3 +222,19 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &7566484596926380204
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6074326420364083561}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
+  m_UseLocal: 1
