@@ -122,6 +122,85 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &153568475
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 153568476}
+  - component: {fileID: 153568478}
+  - component: {fileID: 153568477}
+  m_Layer: 5
+  m_Name: RoomInfo
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &153568476
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 153568475}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 567151885}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 200}
+  m_SizeDelta: {x: 710, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &153568477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 153568475}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_FontSize: 28
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 2
+    m_MaxSize: 40
+    m_Alignment: 4
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: 'Nama Room : 0/0'
+--- !u!222 &153568478
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 153568475}
+  m_CullTransparentMesh: 1
 --- !u!1 &170926668
 GameObject:
   m_ObjectHideFlags: 0
@@ -1014,8 +1093,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1761741474}
         m_TargetAssemblyTypeName: NetworkManajer, Assembly-CSharp
-        m_MethodName: ActivePanel
-        m_Mode: 5
+        m_MethodName: OnShowRoomListButton
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -1588,6 +1667,7 @@ RectTransform:
   m_Children:
   - {fileID: 966517841}
   - {fileID: 642881163}
+  - {fileID: 153568476}
   m_Father: {fileID: 2007077573}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
@@ -2955,8 +3035,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1761741474}
         m_TargetAssemblyTypeName: NetworkManajer, Assembly-CSharp
-        m_MethodName: ActivePanel
-        m_Mode: 5
+        m_MethodName: OnCancelButtonClicked
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -3842,6 +3922,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1543311288}
+  - component: {fileID: 1543311289}
   m_Layer: 5
   m_Name: Content
   m_TagString: Untagged
@@ -3868,6 +3949,32 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
+--- !u!114 &1543311289
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1543311287}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 0
+  m_Spacing: 60
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
 --- !u!1 &1583063946
 GameObject:
   m_ObjectHideFlags: 0
@@ -4383,9 +4490,15 @@ MonoBehaviour:
   inputField: {fileID: 450637398}
   panelLogin: {fileID: 249700858}
   RoomPanel: {fileID: 1705324835}
+  namaRoomInputfield: {fileID: 928317075}
+  MaxPlayerInputfield: {fileID: 1204183996}
   GamePanel: {fileID: 567151884}
+  roomInfoText: {fileID: 153568477}
+  TombolMulaiGame: {fileID: 966517840}
   CreateRoomPanel: {fileID: 1781419191}
   DaftarRoomPanel: {fileID: 1923159820}
+  daftarEntriRoomPrefab: {fileID: 5357873281376291990, guid: b02cf124920b2574da95fee2037525c6, type: 3}
+  daftarRoomUtamaGameobject: {fileID: 1543311287}
   JoinRoom: {fileID: 1374089327}
 --- !u!1 &1781419191
 GameObject:
@@ -4919,8 +5032,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1761741474}
         m_TargetAssemblyTypeName: NetworkManajer, Assembly-CSharp
-        m_MethodName: ActivePanel
-        m_Mode: 5
+        m_MethodName: OnRoomCreateButtonClicked
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
