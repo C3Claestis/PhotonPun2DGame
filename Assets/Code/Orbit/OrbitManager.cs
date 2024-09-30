@@ -36,8 +36,7 @@ public class OrbitManager : MonoBehaviour
     //         UpdateOrbitingObjectAngles();  // Atur sudut ulang setelah objek dihapus
     //     }
     // }
-
-    public void AddOrbitingObject()
+    private void AddOrbitingObject()
     {
         // Buat objek baru
         GameObject newObject = Instantiate(orbitingObjectPrefab);
@@ -55,6 +54,28 @@ public class OrbitManager : MonoBehaviour
 
         // Tambahkan ke list
         orbitingObjects.Add(newObject);
+    }
+    public void AddOrbitingObject(int index)
+    {
+        // Buat objek baru
+        GameObject newObject = Instantiate(orbitingObjectPrefab);
+
+        newObject.transform.position = player.position;
+        // Set newObject sebagai child dari orbitManager
+        newObject.transform.SetParent(this.transform);
+
+        // Dapatkan komponen OrbitingObject
+        OrbitingObject orbitScript = newObject.GetComponent<OrbitingObject>();
+        orbitScript.player = player;
+        orbitScript.orbitRadius = orbitRadius;
+        orbitScript.orbitSpeed = orbitSpeed;
+        orbitScript.orbitManager = this;
+
+        // Tambahkan ke list
+        for (int i = 0; i < index; i++)
+        {
+            orbitingObjects.Add(newObject);
+        }
     }
 
     public void RemoveOrbitingObject(GameObject obj)
