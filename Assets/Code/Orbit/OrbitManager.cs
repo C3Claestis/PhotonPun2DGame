@@ -22,20 +22,20 @@ public class OrbitManager : MonoBehaviour
         UpdateOrbitingObjectAngles();  // Atur sudut objek baru
     }
 
-    void Update()
-    {
-        // Contoh menambah atau menghapus objek dengan tombol input
-        if (Input.GetKeyDown(KeyCode.O))
-        {
-            AddOrbitingObject();
-            UpdateOrbitingObjectAngles();  // Atur sudut objek baru
-        }
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            RemoveOrbitingObject(orbitingObjects.Count > 0 ? orbitingObjects[orbitingObjects.Count - 1] : null);
-            UpdateOrbitingObjectAngles();  // Atur sudut ulang setelah objek dihapus
-        }
-    }
+    // void Update()
+    // {
+    //     // Contoh menambah atau menghapus objek dengan tombol input
+    //     if (Input.GetKeyDown(KeyCode.O))
+    //     {
+    //         AddOrbitingObject();
+    //         UpdateOrbitingObjectAngles();  // Atur sudut objek baru
+    //     }
+    //     if (Input.GetKeyDown(KeyCode.P))
+    //     {
+    //         RemoveOrbitingObject(orbitingObjects.Count > 0 ? orbitingObjects[orbitingObjects.Count - 1] : null);
+    //         UpdateOrbitingObjectAngles();  // Atur sudut ulang setelah objek dihapus
+    //     }
+    // }
 
     public void AddOrbitingObject()
     {
@@ -72,7 +72,7 @@ public class OrbitManager : MonoBehaviour
         return orbitingObjects.Contains(obj);
     }
 
-    private void UpdateOrbitingObjectAngles()
+    public void UpdateOrbitingObjectAngles()
     {
         // Pastikan ada objek orbit sebelum melakukan perhitungan
         if (orbitingObjects.Count > 0)

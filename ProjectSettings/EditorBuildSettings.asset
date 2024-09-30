@@ -6,6 +6,12 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/LobbyGame.unity
+    guid: f2f765aea6607494c876bcc20c1aced2
+  - enabled: 1
+    path: Assets/Scenes/GamePlay.unity
+    guid: 9fc0d4010bbf28b4594072e72b8655ab
+  - enabled: 1
     path: Assets/Matkul/LobbyScene.unity
     guid: 154fbf1c51ddb33478d6d6dff5a7fe1c
   m_configObjects: {}
