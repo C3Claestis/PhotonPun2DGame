@@ -1,7 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
+using Photon.Pun;
 
-public class OrbitManager : MonoBehaviour
+public class OrbitManager : MonoBehaviourPunCallbacks
 {
     [SerializeField] GameObject orbitingObjectPrefab;  // Prefab objek yang akan memutari player
     private Transform player;  // Referensi ke player
@@ -19,6 +20,7 @@ public class OrbitManager : MonoBehaviour
         {
             AddOrbitingObject();
         }
+        photonView.RPC("SyncOrbitAngles", RpcTarget.AllBuffered);
         UpdateOrbitingObjectAngles();  // Atur sudut objek baru
     }
 
@@ -38,11 +40,10 @@ public class OrbitManager : MonoBehaviour
     // }
     private void AddOrbitingObject()
     {
-        // Buat objek baru
-        GameObject newObject = Instantiate(orbitingObjectPrefab);
+        // Buat objek baru menggunakan PhotonNetwork.Instantiate agar tersinkron di seluruh klien
+        GameObject newObject = PhotonNetwork.Instantiate(orbitingObjectPrefab.name, player.position, Quaternion.identity);
 
-        newObject.transform.position = player.position;
-        // Set newObject sebagai child dari orbitManager
+        // Set newObject sebagai child dari OrbitManager
         newObject.transform.SetParent(this.transform);
 
         // Dapatkan komponen OrbitingObject
@@ -52,28 +53,28 @@ public class OrbitManager : MonoBehaviour
         orbitScript.orbitSpeed = orbitSpeed;
         orbitScript.orbitManager = this;
 
-        // Tambahkan ke list
+        // Tambahkan ke list orbitingObjects
         orbitingObjects.Add(newObject);
     }
-    public void AddOrbitingObject(int index)
+
+    public void AddOrbitingObject(int count)
     {
-        // Buat objek baru
-        GameObject newObject = Instantiate(orbitingObjectPrefab);
-
-        newObject.transform.position = player.position;
-        // Set newObject sebagai child dari orbitManager
-        newObject.transform.SetParent(this.transform);
-
-        // Dapatkan komponen OrbitingObject
-        OrbitingObject orbitScript = newObject.GetComponent<OrbitingObject>();
-        orbitScript.player = player;
-        orbitScript.orbitRadius = orbitRadius;
-        orbitScript.orbitSpeed = orbitSpeed;
-        orbitScript.orbitManager = this;
-
-        // Tambahkan ke list
-        for (int i = 0; i < index; i++)
+        for (int i = 0; i < count; i++)
         {
+            // Buat objek baru menggunakan PhotonNetwork.Instantiate agar tersinkron di seluruh klien
+            GameObject newObject = PhotonNetwork.Instantiate(orbitingObjectPrefab.name, player.position, Quaternion.identity);
+
+            // Set newObject sebagai child dari orbitManager
+            newObject.transform.SetParent(this.transform);
+
+            // Dapatkan komponen OrbitingObject
+            OrbitingObject orbitScript = newObject.GetComponent<OrbitingObject>();
+            orbitScript.player = player;
+            orbitScript.orbitRadius = orbitRadius;
+            orbitScript.orbitSpeed = orbitSpeed;
+            orbitScript.orbitManager = this;
+
+            // Tambahkan ke list
             orbitingObjects.Add(newObject);
         }
     }
@@ -110,6 +111,11 @@ public class OrbitManager : MonoBehaviour
                 orbitScript.SetInitialAngle(i * angleStep);
             }
         }
+    }
+    [PunRPC]
+    void SyncOrbitAngles()
+    {
+        UpdateOrbitingObjectAngles();
     }
 }
 

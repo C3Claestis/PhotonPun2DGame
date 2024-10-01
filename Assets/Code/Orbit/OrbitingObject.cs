@@ -1,6 +1,7 @@
+using Photon.Pun;
 using UnityEngine;
 
-public class OrbitingObject : MonoBehaviour
+public class OrbitingObject : MonoBehaviourPunCallbacks
 {
     [HideInInspector] public float orbitRadius;  // Jarak dari player
     [HideInInspector] public float orbitSpeed;  // Kecepatan rotasi
@@ -17,6 +18,13 @@ public class OrbitingObject : MonoBehaviour
 
     void Update()
     {
+        // Cek apakah player masih menjadi parent dari objek ini
+        if (player == null || transform.parent != player || orbitManager == null)
+        {
+            PhotonNetwork.Destroy(gameObject);  // Hancurkan objek ini di seluruh klien
+            return;  // Keluar dari update jika tidak ada player atau bukan child
+        }
+
         if (player != null)
         {
             // Hitung sudut baru untuk orbit
@@ -58,19 +66,18 @@ public class OrbitingObject : MonoBehaviour
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        // Cek apakah objek bertabrakan dengan OrbitingObject lain
+        if (!photonView.IsMine) return;  // Hanya pemain yang memiliki objek ini yang bisa mengontrol penghapusan
+
         OrbitingObject otherOrbitingObject = collision.gameObject.GetComponent<OrbitingObject>();
         if (otherOrbitingObject != null)
         {
-            // Pastikan objek tersebut tidak ada di dalam daftar orbitingObjects di OrbitManager ini
             if (!orbitManager.IsObjectInList(otherOrbitingObject.gameObject))
             {
-                // Lakukan sesuatu saat terjadi tabrakan
                 Debug.Log("Objek orbit bertabrakan dengan objek lain: " + collision.gameObject.name);
-                // Hancurkan objek ini saat bertabrakan
-                orbitManager.RemoveOrbitingObject(this.gameObject);  // Hapus objek dari OrbitManager
-                Destroy(gameObject);
+                // Hapus objek ini saat bertabrakan, sinkron ke seluruh klien
+                orbitManager.RemoveOrbitingObject(this.gameObject);
             }
         }
     }
+
 }

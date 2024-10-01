@@ -1,16 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
-public class SpawnRandomObject : MonoBehaviour
+public class SpawnRandomObject : MonoBehaviourPunCallbacks
 {
     [SerializeField] GameObject orbitGameobject;
 
     // Start is called before the first frame update
     void Start()
     {
-        // Start coroutine once
-        StartCoroutine(RandomSpawn());
+        if (PhotonNetwork.IsMasterClient) // Hanya MasterClient yang melakukan spawning
+        {
+            // Start coroutine once
+            StartCoroutine(RandomSpawn());
+        }
     }
 
     // Coroutine for random spawning
@@ -28,8 +32,16 @@ public class SpawnRandomObject : MonoBehaviour
             // Wait for a random time between 5 and 10 seconds
             yield return new WaitForSeconds(Random.Range(5f, 10f));
 
-            // Instantiate object at the random position
-            Instantiate(orbitGameobject, randomPosition, Quaternion.identity);
+            // Master client spawns the object and sends the data to others
+            photonView.RPC("SpawnObject", RpcTarget.AllBuffered, randomPosition);
         }
+    }
+
+    // RPC function to spawn object
+    [PunRPC]
+    void SpawnObject(Vector3 position)
+    {
+        // Instantiate object at the random position
+        PhotonNetwork.Instantiate(orbitGameobject.name, position, Quaternion.identity);
     }
 }
