@@ -15,13 +15,17 @@ public class OrbitManager : MonoBehaviourPunCallbacks
     void Start()
     {
         player = GetComponent<Transform>();
-        // Tambahkan objek awal ke orbit
-        for (int i = 0; i < objectCount; i++)
+
+        // Tambahkan objek awal ke orbit jika kita adalah master client
+        if (PhotonNetwork.IsMasterClient)
         {
-            AddOrbitingObject();
+            for (int i = 0; i < objectCount; i++)
+            {
+                AddOrbitingObject();
+            }
+            // Sinkronisasi sudut objek untuk semua pemain
+            photonView.RPC("SyncOrbitAngles", RpcTarget.AllBuffered);
         }
-        photonView.RPC("SyncOrbitAngles", RpcTarget.AllBuffered);
-        UpdateOrbitingObjectAngles();  // Atur sudut objek baru
     }
 
     // void Update()
@@ -40,21 +44,23 @@ public class OrbitManager : MonoBehaviourPunCallbacks
     // }
     private void AddOrbitingObject()
     {
-        // Buat objek baru menggunakan PhotonNetwork.Instantiate agar tersinkron di seluruh klien
-        GameObject newObject = PhotonNetwork.Instantiate(orbitingObjectPrefab.name, player.position, Quaternion.identity);
+        if (PhotonNetwork.IsMasterClient)
+        {
+            // Buat objek baru menggunakan PhotonNetwork.Instantiate agar tersinkron di seluruh klien
+            GameObject newObject = PhotonNetwork.Instantiate(orbitingObjectPrefab.name, player.position, Quaternion.identity);
 
-        // Set newObject sebagai child dari OrbitManager
-        newObject.transform.SetParent(this.transform);
+            // Set newObject sebagai child dari OrbitManager
+            newObject.transform.SetParent(this.transform);
 
-        // Dapatkan komponen OrbitingObject
-        OrbitingObject orbitScript = newObject.GetComponent<OrbitingObject>();
-        orbitScript.player = player;
-        orbitScript.orbitRadius = orbitRadius;
-        orbitScript.orbitSpeed = orbitSpeed;
-        orbitScript.orbitManager = this;
+            // Panggil RPC untuk mengatur properti pada OrbitingObject yang baru dibuat
+            photonView.RPC("InitializeOrbitingObject", RpcTarget.AllBuffered, newObject.GetComponent<PhotonView>().ViewID, player.GetComponent<PhotonView>().ViewID, orbitRadius, orbitSpeed);
 
-        // Tambahkan ke list orbitingObjects
-        orbitingObjects.Add(newObject);
+            // Tambahkan ke list orbitingObjects
+            orbitingObjects.Add(newObject);
+
+            // Perbarui sudut objek yang baru
+            UpdateOrbitingObjectAngles();
+        }
     }
 
     public void AddOrbitingObject(int count)
@@ -64,28 +70,33 @@ public class OrbitManager : MonoBehaviourPunCallbacks
             // Buat objek baru menggunakan PhotonNetwork.Instantiate agar tersinkron di seluruh klien
             GameObject newObject = PhotonNetwork.Instantiate(orbitingObjectPrefab.name, player.position, Quaternion.identity);
 
-            // Set newObject sebagai child dari orbitManager
+            // Set newObject sebagai child dari OrbitManager
             newObject.transform.SetParent(this.transform);
 
-            // Dapatkan komponen OrbitingObject
-            OrbitingObject orbitScript = newObject.GetComponent<OrbitingObject>();
-            orbitScript.player = player;
-            orbitScript.orbitRadius = orbitRadius;
-            orbitScript.orbitSpeed = orbitSpeed;
-            orbitScript.orbitManager = this;
+            // Panggil RPC untuk mengatur properti pada OrbitingObject yang baru dibuat
+            photonView.RPC("InitializeOrbitingObject", RpcTarget.AllBuffered, newObject.GetComponent<PhotonView>().ViewID, player.GetComponent<PhotonView>().ViewID, orbitRadius, orbitSpeed);
 
-            // Tambahkan ke list
+            // Tambahkan ke list orbitingObjects
             orbitingObjects.Add(newObject);
         }
+        // Sinkronisasi sudut objek untuk semua pemain
+        photonView.RPC("SyncOrbitAngles", RpcTarget.AllBuffered);
+        UpdateOrbitingObjectAngles(); // Update sudut setelah menambahkan objek
     }
+
 
     public void RemoveOrbitingObject(GameObject obj)
     {
         if (obj != null && orbitingObjects.Contains(obj))
         {
-            orbitingObjects.Remove(obj);  // Hapus objek dari list
-            Destroy(obj);  // Hapus objek dari scene
-            UpdateOrbitingObjectAngles();  // Atur sudut objek baru
+            // Hapus objek dari list
+            orbitingObjects.Remove(obj);
+
+            // Hapus objek dari semua klien
+            PhotonNetwork.Destroy(obj);
+
+            // Perbarui sudut objek yang tersisa
+            UpdateOrbitingObjectAngles();
         }
     }
 
@@ -96,26 +107,76 @@ public class OrbitManager : MonoBehaviourPunCallbacks
 
     public void UpdateOrbitingObjectAngles()
     {
-        // Pastikan ada objek orbit sebelum melakukan perhitungan
-        if (orbitingObjects.Count > 0)
+        // Hanya master client yang menghitung sudut dan menyinkronkannya
+        if (PhotonNetwork.IsMasterClient)
         {
-            // Hitung sudut distribusi per objek
             float angleStep = 360f / orbitingObjects.Count;
+            float[] angles = new float[orbitingObjects.Count];
 
             for (int i = 0; i < orbitingObjects.Count; i++)
             {
-                // Dapatkan script OrbitingObject pada setiap objek
                 OrbitingObject orbitScript = orbitingObjects[i].GetComponent<OrbitingObject>();
-
-                // Atur sudut distribusi awal untuk setiap objek
-                orbitScript.SetInitialAngle(i * angleStep);
+                float angle = i * angleStep;
+                orbitScript.SetInitialAngle(angle);
+                angles[i] = angle; // Simpan sudut untuk dikirimkan melalui RPC
             }
+
+            // Kirim sudut ke semua klien lain
+            photonView.RPC("SyncOrbitAnglesWithClients", RpcTarget.AllBuffered, angles);
         }
     }
+
+    [PunRPC]
+    void SyncOrbitAnglesWithClients(float[] angles)
+    {
+        for (int i = 0; i < orbitingObjects.Count; i++)
+        {
+            OrbitingObject orbitScript = orbitingObjects[i].GetComponent<OrbitingObject>();
+            orbitScript.SetInitialAngle(angles[i]); // Set sudut yang diterima dari master
+        }
+    }
+
+    [PunRPC]
+    void InitializeOrbitingObject(int newObjectViewID, int playerViewID, float radius, float speed)
+    {
+        // Temukan PhotonView dari objek yang baru dibuat
+        PhotonView newObjectPhotonView = PhotonView.Find(newObjectViewID);
+        OrbitingObject orbitingObject = newObjectPhotonView.GetComponent<OrbitingObject>();
+
+        if (orbitingObject != null)
+        {
+            // Temukan PhotonView dari player
+            PhotonView playerPhotonView = PhotonView.Find(playerViewID);
+            orbitingObject.player = playerPhotonView.transform;  // Set player
+            orbitingObject.orbitRadius = radius;  // Set radius
+            orbitingObject.orbitSpeed = speed;    // Set speed
+            orbitingObject.orbitManager = this;   // Set orbit manager
+        }
+    }
+
     [PunRPC]
     void SyncOrbitAngles()
     {
-        UpdateOrbitingObjectAngles();
+        // Hanya klien selain master yang menyinkronkan sudutnya dari master
+        if (!PhotonNetwork.IsMasterClient)
+        {
+            UpdateOrbitingObjectAngles();
+        }
     }
+
+    public override void OnJoinedRoom()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            // Panggil AddOrbitingObject sesuai jumlah objek saat ini untuk memastikan sinkronisasi
+            for (int i = 0; i < objectCount; i++)
+            {
+                AddOrbitingObject();
+            }
+
+            photonView.RPC("SyncOrbitAnglesWithClients", RpcTarget.AllBuffered);
+        }
+    }
+
 }
 

@@ -8,7 +8,6 @@ public class ObjectSpawnOrbit : MonoBehaviourPun
     [SerializeField] SpriteRenderer sprite;
     private int NilaiTambah;
 
-    // Start is called before the first frame update
     void Start()
     {
         // Cek apakah PhotonView sudah terhubung sebelum melakukan RPC
@@ -55,18 +54,9 @@ public class ObjectSpawnOrbit : MonoBehaviourPun
                     // Panggil RPC dan kirimkan NilaiTambah dan ID dari PhotonView milik orbit
                     photonView.RPC("HandleOrbitTrigger", RpcTarget.AllBuffered, NilaiTambah, orbitPhotonView.ViewID);
                 }
-                else
-                {
-                    Debug.LogError("PhotonView not found on: " + other.gameObject.name);
-                }
-            }
-            else
-            {
-                Debug.LogError("OrbitManager not found on: " + other.gameObject.name);
             }
         }
     }
-
 
     // RPC untuk menangani interaksi dengan Orbit di semua klien
     [PunRPC]
@@ -82,7 +72,11 @@ public class ObjectSpawnOrbit : MonoBehaviourPun
             orbit.UpdateOrbitingObjectAngles();
         }
 
-        // Hancurkan objek setelah trigger, ini juga akan terlihat di semua klien
-        Destroy(gameObject);
+        // Hanya pemilik objek ini yang boleh mengontrol penghapusan
+        if (photonView.IsMine || PhotonNetwork.IsMasterClient)
+        {
+            // Hancurkan objek spawn setelah trigger, ini juga akan terlihat di semua klien
+            PhotonNetwork.Destroy(gameObject);
+        }
     }
 }

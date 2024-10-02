@@ -350,7 +350,7 @@ MonoBehaviour:
   m_SynchronizePosition: 1
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 1
-  m_UseLocal: 1
+  m_UseLocal: 0
 --- !u!58 &7832427878049082993
 CircleCollider2D:
   m_ObjectHideFlags: 0

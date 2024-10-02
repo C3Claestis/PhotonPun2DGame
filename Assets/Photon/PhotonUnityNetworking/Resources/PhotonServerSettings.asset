@@ -51,6 +51,12 @@ MonoBehaviour:
   - HandleOrbitTrigger
   - SyncColorAndValue
   - SyncOrbitAngles
+  - InitializeOrbitingObject
+  - InitializeOrbitingObjectsOrbit
+  - SyncOrbitAnglesWithClients
+  - RPC_SetInitialAngle
+  - RPC_UpdateRotation
+  - SyncOrbitVariables
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
