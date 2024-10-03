@@ -7,12 +7,10 @@ public class SpawnRandomObject : MonoBehaviourPunCallbacks
 {
     [SerializeField] GameObject orbitGameobject;
 
-    // Start is called before the first frame update
     void Start()
     {
         if (PhotonNetwork.IsMasterClient) // Hanya MasterClient yang melakukan spawning
         {
-            // Start coroutine once
             StartCoroutine(RandomSpawn());
         }
     }
@@ -25,23 +23,33 @@ public class SpawnRandomObject : MonoBehaviourPunCallbacks
             // Random range for X and Y coordinates
             float randomX = Random.Range(-40f, 40f);
             float randomY = Random.Range(-40f, 40f);
-            float randomZ = 0f;  // Adjust if needed for 3D space
+            float randomZ = 0f;
 
             Vector3 randomPosition = new Vector3(randomX, randomY, randomZ);
+
+            // Randomize value (NilaiTambah) between 1 and 10
+            int randomValue = Random.Range(1, 10);
 
             // Wait for a random time between 5 and 10 seconds
             yield return new WaitForSeconds(Random.Range(5f, 10f));
 
-            // Master client spawns the object and sends the data to others
-            photonView.RPC("SpawnObject", RpcTarget.AllBuffered, randomPosition);
+            // Master client spawns the object with the random value and sends it to others
+            photonView.RPC("SpawnObjectWithValue", RpcTarget.AllBuffered, randomPosition, randomValue);
         }
     }
 
-    // RPC function to spawn object
+    // RPC function to spawn object with a random value
     [PunRPC]
-    void SpawnObject(Vector3 position)
+    void SpawnObjectWithValue(Vector3 position, int value)
     {
         // Instantiate object at the random position
-        PhotonNetwork.Instantiate(orbitGameobject.name, position, Quaternion.identity);
+        GameObject newObject = PhotonNetwork.Instantiate(orbitGameobject.name, position, Quaternion.identity);
+
+        // Get the ObjectSpawnOrbit component and assign the random value to it
+        ObjectSpawnOrbit orbitScript = newObject.GetComponent<ObjectSpawnOrbit>();
+        if (orbitScript != null)
+        {
+            orbitScript.SetNilaiTambah(value); // Pass the value to the spawned object
+        }
     }
 }

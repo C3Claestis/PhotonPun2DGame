@@ -8,24 +8,20 @@ public class ObjectSpawnOrbit : MonoBehaviourPun
     [SerializeField] SpriteRenderer sprite;
     private int NilaiTambah;
 
-    void Start()
+    // This function is called by the spawning script to set the random value
+    public void SetNilaiTambah(int nilai)
     {
-        // Cek apakah PhotonView sudah terhubung sebelum melakukan RPC
-        if (photonView.IsMine && PhotonNetwork.IsMasterClient)
-        {
-            // Set NilaiTambah dan panggil RPC untuk menyinkronkan ke semua klien
-            NilaiTambah = Random.Range(1, 10);
-            photonView.RPC("SyncColorAndValue", RpcTarget.AllBuffered, NilaiTambah);
-        }
-    }
-
-    // RPC untuk sinkronisasi warna dan NilaiTambah ke semua klien
-    [PunRPC]
-    void SyncColorAndValue(int nilai)
-    {
+        // Set the random value
         NilaiTambah = nilai;
 
-        // Ubah warna berdasarkan NilaiTambah
+        // Sync the color based on the value
+        SyncColorAndValue(NilaiTambah);
+    }
+
+    // Function to sync the color based on the value
+    void SyncColorAndValue(int nilai)
+    {
+        // Set color based on the value
         if (NilaiTambah >= 1 && NilaiTambah < 4)
         {
             sprite.color = Color.white;
@@ -48,35 +44,23 @@ public class ObjectSpawnOrbit : MonoBehaviourPun
 
             if (orbit != null)
             {
-                PhotonView orbitPhotonView = orbit.GetComponent<PhotonView>();
-                if (orbitPhotonView != null)
-                {
-                    // Panggil RPC dan kirimkan NilaiTambah dan ID dari PhotonView milik orbit
-                    photonView.RPC("HandleOrbitTrigger", RpcTarget.AllBuffered, NilaiTambah, orbitPhotonView.ViewID);
-                }
+                // Handle interaction with the orbit
+                HandleOrbitTrigger(NilaiTambah, orbit);
             }
         }
     }
 
-    // RPC untuk menangani interaksi dengan Orbit di semua klien
-    [PunRPC]
-    void HandleOrbitTrigger(int nilai, int orbitViewID)
+    // Function to handle interaction with the orbit
+    void HandleOrbitTrigger(int nilai, OrbitManager orbit)
     {
-        // Cari PhotonView berdasarkan ID yang diterima dan dapatkan OrbitManager dari objek tersebut
-        PhotonView orbitPhotonView = PhotonView.Find(orbitViewID);
-        OrbitManager orbit = orbitPhotonView.GetComponent<OrbitManager>();
-
         if (orbit != null)
         {
+            // Add orbiting object with the synced value
             orbit.AddOrbitingObject(nilai);
             orbit.UpdateOrbitingObjectAngles();
         }
 
-        // Hanya pemilik objek ini yang boleh mengontrol penghapusan
-        if (photonView.IsMine || PhotonNetwork.IsMasterClient)
-        {
-            // Hancurkan objek spawn setelah trigger, ini juga akan terlihat di semua klien
-            PhotonNetwork.Destroy(gameObject);
-        }
+        // Destroy the spawned object after the trigger (also in all clients)
+        PhotonNetwork.Destroy(gameObject);
     }
 }

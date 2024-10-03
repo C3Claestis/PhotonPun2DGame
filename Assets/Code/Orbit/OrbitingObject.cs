@@ -14,12 +14,6 @@ public class OrbitingObject : MonoBehaviourPunCallbacks
     {
         // Set rotasi awal menjadi rotasi objek saat ini
         targetRotation = transform.rotation;
-
-        // Sinkronisasi awal variabel penting
-        if (PhotonNetwork.IsMasterClient)
-        {
-            photonView.RPC("SyncOrbitVariables", RpcTarget.AllBuffered, orbitRadius, orbitSpeed, angle);
-        }
     }
 
     void Update()
@@ -47,14 +41,13 @@ public class OrbitingObject : MonoBehaviourPunCallbacks
         }
     }
 
-    // Fungsi untuk mengatur sudut awal setiap objek orbit dengan RPC
+    // Fungsi untuk mengatur sudut awal setiap objek orbit
     public void SetInitialAngle(float initialAngle)
     {
         angle = initialAngle;
-        photonView.RPC("RPC_SetInitialAngle", RpcTarget.AllBuffered, angle);
     }
 
-    // Fungsi untuk update rotasi melalui RPC
+    // Fungsi untuk update rotasi
     void UpdateRotation(float radians)
     {
         // Hitung arah rotasi yang dituju berdasarkan posisi saat ini
@@ -65,47 +58,18 @@ public class OrbitingObject : MonoBehaviourPunCallbacks
 
         // Set target rotasi menggunakan zRotation yang baru
         targetRotation = Quaternion.Euler(0f, 0f, zRotation - 90f);  // -90f untuk menyesuaikan orientasi objek agar selalu menghadap ke depan saat orbit
-
-        // Sinkronisasi rotasi
-        photonView.RPC("RPC_UpdateRotation", RpcTarget.AllBuffered, zRotation);
     }
-
-    // RPC untuk menyinkronkan variabel orbit (orbitRadius, orbitSpeed, angle)
-    [PunRPC]
-    void SyncOrbitVariables(float radius, float speed, float initialAngle)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        orbitRadius = radius;
-        orbitSpeed = speed;
-        angle = initialAngle;
+        OrbitingObject otherOrbitingObject = collision.gameObject.GetComponent<OrbitingObject>();
+        if (otherOrbitingObject != null)
+        {
+            if (!orbitManager.IsObjectInList(otherOrbitingObject.gameObject))
+            {
+                Debug.Log("Objek orbit bertabrakan dengan objek lain: " + collision.gameObject.name);
+                // Hapus objek ini saat bertabrakan, sinkron ke seluruh klien
+                orbitManager.RemoveOrbitingObject(this.gameObject);
+            }
+        }
     }
-
-    // RPC untuk menyinkronkan rotasi
-    [PunRPC]
-    void RPC_UpdateRotation(float zRotation)
-    {
-        targetRotation = Quaternion.Euler(0f, 0f, zRotation - 90f);
-    }
-
-    // RPC untuk menyinkronkan sudut awal objek orbit
-    [PunRPC]
-    void RPC_SetInitialAngle(float initialAngle)
-    {
-        angle = initialAngle;
-    }
-
-    // private void OnCollisionEnter2D(Collision2D collision)
-    // {
-    //     if (!photonView.IsMine) return;  // Hanya pemilik objek ini yang boleh mengontrol penghapusan
-
-    //     OrbitingObject otherOrbitingObject = collision.gameObject.GetComponent<OrbitingObject>();
-    //     if (otherOrbitingObject != null)
-    //     {
-    //         if (!orbitManager.IsObjectInList(otherOrbitingObject.gameObject))
-    //         {
-    //             Debug.Log("Objek orbit bertabrakan dengan objek lain: " + collision.gameObject.name);
-    //             // Hapus objek ini saat bertabrakan, sinkron ke seluruh klien
-    //             orbitManager.RemoveOrbitingObject(this.gameObject);
-    //         }
-    //     }
-    // }
 }
