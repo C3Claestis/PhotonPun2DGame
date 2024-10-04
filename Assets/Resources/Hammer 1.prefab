@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 6910527203513633250}
   - component: {fileID: 4151705257217513625}
   - component: {fileID: 8972776386629510082}
-  m_Layer: 0
+  m_Layer: 23
   m_Name: Hammer 1
   m_TagString: OrbitObject
   m_Icon: {fileID: 0}
@@ -110,7 +110,7 @@ CapsuleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -184,7 +184,7 @@ GameObject:
   - component: {fileID: 1239377876013909896}
   - component: {fileID: 8813539937913514932}
   - component: {fileID: 7566484596926380204}
-  m_Layer: 0
+  m_Layer: 23
   m_Name: Sprite
   m_TagString: OrbitObject
   m_Icon: {fileID: 0}
@@ -244,9 +244,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: 1915792569
+  m_SortingLayer: 4
+  m_SortingOrder: 2
   m_Sprite: {fileID: 1705224159, guid: a5e645d0b2507ac42807ef8e886f7d45, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

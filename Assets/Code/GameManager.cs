@@ -5,27 +5,36 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] GameObject playerPrefab;
+    [SerializeField] GameObject playerPrefab; // Player prefab
+    [SerializeField] Transform[] pointSpawn;  // Array of spawn points
 
-    // Start is called before the first frame update
     void Start()
     {
-        // Generate random spawn position
-        float randomX = Random.Range(-50f, 50f);
-        float randomY = Random.Range(-50f, 50f);
+        // Pastikan hanya instantiate player saat terhubung dengan Photon
+        if (PhotonNetwork.IsConnectedAndReady)
+        {
+            int playerIndex = PhotonNetwork.LocalPlayer.ActorNumber - 1; // Dapatkan index player berdasarkan ActorNumber
 
-        // You might want to set z to a specific value, assuming it's 0 for a 2D plane
-        Vector3 randomSpawnPosition = new Vector3(randomX, randomY, 0f);
+            // Jika playerIndex lebih kecil dari jumlah pointSpawn yang tersedia
+            if (playerIndex < pointSpawn.Length)
+            {
+                Vector3 spawnPosition = pointSpawn[playerIndex].position; // Posisi sesuai urutan player
 
-        // Instantiate player at random position
-        PhotonNetwork.Instantiate(playerPrefab.name, randomSpawnPosition, Quaternion.identity);
-        // Set referensi ke objek player untuk LocalPlayer
-        PhotonNetwork.LocalPlayer.TagObject = playerPrefab.transform;
+                // Instantiate player pada posisi yang sesuai
+                GameObject newPlayer = PhotonNetwork.Instantiate(playerPrefab.name, spawnPosition, Quaternion.identity);
+
+                // Set referensi ke objek player untuk LocalPlayer
+                PhotonNetwork.LocalPlayer.TagObject = newPlayer.transform;
+            }
+            else
+            {
+                Debug.LogWarning("Tidak ada pointSpawn yang tersedia untuk player index ini.");
+            }
+        }
     }
 
-    // Update is called once per frame
     void Update()
     {
-
+        // Anda bisa menambahkan logika lain di Update jika diperlukan
     }
 }

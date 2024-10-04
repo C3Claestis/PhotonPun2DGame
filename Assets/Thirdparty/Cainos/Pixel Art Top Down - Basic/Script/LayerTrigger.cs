@@ -13,15 +13,21 @@ namespace Cainos.PixelArtTopDown_Basic
 
         private void OnTriggerExit2D(Collider2D other)
         {
-            other.gameObject.layer = LayerMask.NameToLayer(layer);
-
-            other.gameObject.GetComponent<SpriteRenderer>().sortingLayerName = sortingLayer;
-            SpriteRenderer[] srs = other.gameObject.GetComponentsInChildren<SpriteRenderer>();
-            foreach ( SpriteRenderer sr in srs)
+            if (!other.CompareTag("OrbitObject"))
             {
-                sr.sortingLayerName = sortingLayer;
+                other.gameObject.layer = LayerMask.NameToLayer(layer);
+
+                // Get the SpriteRenderer of the first child only (index 0)
+                if (other.transform.childCount > 0)
+                {
+                    Transform firstChild = other.transform.GetChild(0);
+                    SpriteRenderer firstChildRenderer = firstChild.GetComponent<SpriteRenderer>();
+                    if (firstChildRenderer != null)
+                    {
+                        firstChildRenderer.sortingLayerName = sortingLayer;
+                    }
+                }
             }
         }
-
     }
 }

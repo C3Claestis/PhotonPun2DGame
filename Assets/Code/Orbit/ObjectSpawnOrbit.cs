@@ -38,7 +38,7 @@ public class ObjectSpawnOrbit : MonoBehaviourPun
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Orbit"))
+        if (other.CompareTag("Player"))
         {
             OrbitManager orbit = other.GetComponent<OrbitManager>();
 

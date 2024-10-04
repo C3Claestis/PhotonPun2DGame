@@ -3,7 +3,9 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Orbit
+  - OrbitObject
   layers:
   - Default
   - TransparentFX
@@ -28,7 +30,7 @@ TagManager:
   - Layer 1
   - Layer 2
   - Layer 3
-  - 
+  - Layer Sabit
   - 
   - 
   - 
@@ -49,4 +51,7 @@ TagManager:
     locked: 0
   - name: Layer 3
     uniqueID: 4189426099
+    locked: 0
+  - name: Player
+    uniqueID: 1915792569
     locked: 0

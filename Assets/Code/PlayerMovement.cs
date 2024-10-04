@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviourPun, IPunObservable  // Tambahkan IPunObservable untuk sinkronisasi manual
 {
-    float speed = 0.05f;
+    float speed = 2f;
     float dirX;
     float dirY;
 
@@ -11,14 +11,15 @@ public class PlayerMovement : MonoBehaviourPun, IPunObservable  // Tambahkan IPu
     [SerializeField] Transform sprite_karakter;
     [SerializeField] Animator animator_karakter;
 
-    private PhotonView photonViews;
+
+    private Rigidbody2D rb;
 
     private GameObject sceneCamera;
     [SerializeField] GameObject playerCamera;
 
     void Start()
     {
-        photonViews = GetComponent<PhotonView>();
+        rb = GetComponent<Rigidbody2D>();
 
         // Kamera hanya mengikuti pemain lokal 
         if (photonView.IsMine)
@@ -45,7 +46,9 @@ public class PlayerMovement : MonoBehaviourPun, IPunObservable  // Tambahkan IPu
         dirX = Input.GetAxis("Horizontal") * speed;
         dirY = Input.GetAxis("Vertical") * speed;
 
-        transform.Translate(dirX, dirY, 0);
+        // Menggunakan Rigidbody2D untuk mengatur kecepatan
+        rb.velocity = new Vector2(dirX * speed, dirY * speed);
+        //transform.Translate(dirX, dirY, 0);
     }
 
     void HandleAnimation()
