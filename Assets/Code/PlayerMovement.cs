@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviourPun, IPunObservable  // Tambahkan IPunObservable untuk sinkronisasi manual
 {
-    float speed = 0.1f;
+    float speed = 0.05f;
     float dirX;
     float dirY;
 

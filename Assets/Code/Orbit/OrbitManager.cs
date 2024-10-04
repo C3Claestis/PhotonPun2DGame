@@ -7,7 +7,7 @@ public class OrbitManager : MonoBehaviourPunCallbacks
     [SerializeField] GameObject orbitingObjectPrefab;  // Prefab objek yang akan memutari player
     private Transform player;  // Referensi ke player
     private int objectCount = 3;  // Jumlah awal objek
-    private float orbitRadius = 7f;
+    private float orbitRadius = 1.5f;
     private float orbitSpeed = 200f;
 
     private List<GameObject> orbitingObjects = new List<GameObject>();  // List untuk menyimpan objek
