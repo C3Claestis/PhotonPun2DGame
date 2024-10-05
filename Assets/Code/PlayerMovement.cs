@@ -1,5 +1,7 @@
 using Photon.Pun;  // Import Photon PUN
+using Photon.Realtime;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviourPun, IPunObservable  // Tambahkan IPunObservable untuk sinkronisasi manual
 {
@@ -10,7 +12,7 @@ public class PlayerMovement : MonoBehaviourPun, IPunObservable  // Tambahkan IPu
     [SerializeField] Transform cameraFollow;
     [SerializeField] Transform sprite_karakter;
     [SerializeField] Animator animator_karakter;
-
+    [SerializeField] Text nickPlayer;
 
     private Rigidbody2D rb;
 
@@ -24,10 +26,19 @@ public class PlayerMovement : MonoBehaviourPun, IPunObservable  // Tambahkan IPu
         // Kamera hanya mengikuti pemain lokal 
         if (photonView.IsMine)
         {
+            // Set nickname for the local player
+            nickPlayer.text = PhotonNetwork.NickName;
+            photonView.RPC("SyncNickname", RpcTarget.Others, PhotonNetwork.NickName);
+
             sceneCamera = GameObject.Find("Main Camera");
             sceneCamera.SetActive(false);
             playerCamera.SetActive(true);
             cameraFollow.transform.position = new Vector3(transform.position.x, transform.position.y, -10f);
+        }
+        else
+        {
+            // Set nickname for other players
+            nickPlayer.text = photonView.Owner.NickName;
         }
     }
 
@@ -97,7 +108,11 @@ public class PlayerMovement : MonoBehaviourPun, IPunObservable  // Tambahkan IPu
     {
         sprite_karakter.localScale = flipScale;
     }
-
+    [PunRPC]
+    void SyncNickname(string nickname)
+    {
+        nickPlayer.text = nickname;
+    }
     // Sinkronisasi posisi dan rotasi secara otomatis melalui Photon PUN
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
