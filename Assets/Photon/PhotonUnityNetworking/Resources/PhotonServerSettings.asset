@@ -59,6 +59,9 @@ MonoBehaviour:
   - SyncOrbitVariables
   - SpawnObjectWithValue
   - SyncNickname
+  - SyncHP
+  - ReducePlayerHP
+  - SyncMovement
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
