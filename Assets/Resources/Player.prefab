@@ -409,13 +409,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b8204dc5e49d6a45a2dc827efeeeaf1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cameraFollow: {fileID: 7631525180753691041}
   sprite_karakter: {fileID: 1524406021769001290}
   animator_karakter: {fileID: 6153334268725321893}
   nickPlayer: {fileID: 2938845725244985285}
-  playerCamera: {fileID: 3485255695399409971}
   fillBarHP: {fileID: 2682601138948281094}
   maxHP: 100
+  gameManager: {fileID: 0}
 --- !u!114 &5896973751875885695
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -680,7 +679,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 1205873148, guid: 156ec492e516ccb4099add479601d65e, type: 3}
+  m_Sprite: {fileID: 1823988182, guid: 156ec492e516ccb4099add479601d65e, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -755,7 +754,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 856639315, guid: 156ec492e516ccb4099add479601d65e, type: 3}
+  m_Sprite: {fileID: -504638740, guid: 156ec492e516ccb4099add479601d65e, type: 3}
   m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1

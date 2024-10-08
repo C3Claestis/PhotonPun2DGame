@@ -9,16 +9,14 @@ public class PlayerMovement : MonoBehaviourPun, IPunObservable  // Tambahkan IPu
     float dirX;
     float dirY;
     int currentHP;  // HP saat ini
-    [SerializeField] Transform cameraFollow;
     [SerializeField] Transform sprite_karakter;
     [SerializeField] Animator animator_karakter;
     [SerializeField] Text nickPlayer;
-    [SerializeField] GameObject playerCamera;
     [SerializeField] Image fillBarHP;
     [SerializeField] int maxHP = 100;  // HP Maksimum
+    [SerializeField] GameManager gameManager;
     private Rigidbody2D rb;
-    private GameObject sceneCamera;
-
+    private GameObject cameraFollow;
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -31,9 +29,8 @@ public class PlayerMovement : MonoBehaviourPun, IPunObservable  // Tambahkan IPu
             nickPlayer.text = PhotonNetwork.NickName;
             photonView.RPC("SyncNickname", RpcTarget.Others, PhotonNetwork.NickName);
 
-            sceneCamera = GameObject.Find("Main Camera");
-            sceneCamera.SetActive(false);
-            playerCamera.SetActive(true);
+            gameManager = GameObject.Find("Manager").GetComponent<GameManager>();
+            cameraFollow = GameObject.Find("Main Camera");
             cameraFollow.transform.position = new Vector3(transform.position.x, transform.position.y, -10f);
         }
         else
@@ -52,6 +49,18 @@ public class PlayerMovement : MonoBehaviourPun, IPunObservable  // Tambahkan IPu
             HandleMovement();
             HandleAnimation();
             HandleCameraFollow();
+
+            if (Input.GetKeyDown(KeyCode.P))
+            {
+                TakeDamage(110);
+            }
+            // Jika HP 0 atau kurang, hancurkan player
+            if (currentHP <= 0)
+            {
+                // Sinkronkan bahwa player ini telah dihancurkan ke semua pemain
+                photonView.RPC("DestroyPlayer", RpcTarget.AllBuffered);
+                gameManager.isDefeat = true;
+            }
         }
     }
     public void TakeDamage(int damage)
@@ -178,6 +187,21 @@ public class PlayerMovement : MonoBehaviourPun, IPunObservable  // Tambahkan IPu
     {
         currentHP = syncedHP;
         UpdateHPBar();  // Perbarui tampilan HP bar ketika HP disinkronkan
+    }
+    [PunRPC]
+    void DestroyPlayer()
+    {
+        // Hancurkan semua child termasuk objek orbit
+        foreach (Transform child in transform)
+        {
+            Destroy(child.gameObject);  // Hancurkan semua child
+        }
+
+        // Hancurkan game object player ini
+        if (photonView.IsMine)
+        {
+            PhotonNetwork.Destroy(gameObject);  // Hancurkan objek player di Photon Network
+        }
     }
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {

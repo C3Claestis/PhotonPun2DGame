@@ -62,6 +62,7 @@ MonoBehaviour:
   - SyncHP
   - ReducePlayerHP
   - SyncMovement
+  - DestroyPlayer
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

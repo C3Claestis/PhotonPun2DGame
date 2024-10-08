@@ -74,5 +74,14 @@ public class OrbitingObject : MonoBehaviourPunCallbacks
                 }
             }
         }
+
+        if (collision.CompareTag("Player"))
+        {
+            PlayerMovement playerMovement = collision.gameObject.GetComponent<PlayerMovement>();
+            if (playerMovement != null)
+            {
+                playerMovement.TakeDamage(20);
+            }
+        }
     }
 }

@@ -2,12 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     [SerializeField] GameObject playerPrefab; // Player prefab
     [SerializeField] Transform[] pointSpawn;  // Array of spawn points
+    [SerializeField] GameObject PanelDefeat;
+    [SerializeField] GameObject PanelWinner;
 
+    [HideInInspector] public bool isDefeat = false;
+    [HideInInspector] public bool isWinner = false;
     void Start()
     {
         // Pastikan hanya instantiate player saat terhubung dengan Photon
@@ -35,6 +40,28 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        // Anda bisa menambahkan logika lain di Update jika diperlukan
+        PanelDefeat.SetActive(isDefeat);
+        PanelWinner.SetActive(isWinner);
+    }
+
+    public void LeaveRoom()
+    {
+        StartCoroutine(LeaveRoomAndReturnToMainMenu());
+    }
+
+     // Coroutine untuk memastikan keluar dari room dan pindah ke scene 0
+    IEnumerator LeaveRoomAndReturnToMainMenu()
+    {
+        // Keluar dari room
+        PhotonNetwork.LeaveRoom();
+
+        // Tunggu hingga proses keluar dari room selesai
+        while (PhotonNetwork.InRoom)
+        {
+            yield return null;
+        }
+
+        // Setelah berhasil keluar, load scene 0
+        SceneManager.LoadScene(0);
     }
 }
